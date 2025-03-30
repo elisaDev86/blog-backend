@@ -7,14 +7,14 @@ dotenv.config();
 passport.use(
     new GoogleStrategy(
         {
-            clientID: process.env.GOOGLE_CLIENT_ID,   // Prende l'ID dal .env
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET,  // Prende il Secret dal .env
-            callbackURL: "/api/auth/google/callback",  // L'endpoint a cui Google risponde
+            clientID: process.env.GOOGLE_CLIENT_ID,  // Prende l'ID client dal file .env
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,  // Prende il secret dal file .env
+            callbackURL: "https://blog-backend-01s3.onrender.com/api/auth/google/callback",  // URL completo di callback
         },
         (accessToken, refreshToken, profile, done) => {
-            // Qui salvo l'utente nel database
+            // Qui puoi gestire l'autenticazione dell'utente
             console.log("Profilo Google:", profile);
-            return done(null, profile);
+            return done(null, profile);  // Salva il profilo dell'utente (puoi anche salvarlo nel DB)
         }
     )
 );
