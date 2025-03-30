@@ -1,0 +1,30 @@
+// creazione di un post
+POST http://localhost:5000/api/posts/create
+Content-Type: application/json
+
+{
+  "title": "Il mio primo post",
+  "content": "Questo è il contenuto del mio primo post.",
+  "authorId": "67d533970e6c0053a00c7ecd"
+}
+
+
+// recuperare TUTTI i post
+GET http://localhost:5000/api/posts/
+
+// recuperare UN POST SPECIFICO--> Sostituire l'ID PLACEHOLDER con un ID del POST!!! NON dell'utente! valido
+GET http://localhost:5000/api/posts/67d53ed60e6c0053a00c7ed4 
+
+// aggiornare UN SINGOLO POST--> Sostituire l'ID PLACEHOLDER con un ID del POST!!! NON dell'utente! valido
+PUT http://localhost:5000/api/posts/67d53ed60e6c0053a00c7ed4
+Content-Type: application/json
+
+{
+  "title": "Il mio primo post aggiornato",
+  "content": "Questo è il contenuto aggiornato del mio primo post."
+}
+
+// eliminare UN SINGOLO POST--> Sostituire l'ID PLACEHOLDER con un ID valido
+DELETE http://localhost:5000/api/posts/67d53ed60e6c0053a00c7ed4
+
+

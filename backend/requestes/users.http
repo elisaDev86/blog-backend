@@ -1,0 +1,22 @@
+### Registrazione utente
+POST http://localhost:5000/api/users/register
+Content-Type: application/json
+
+{
+  "name": "Anna",
+  "lastname": "Neri",
+  "email": "anna@example.com",
+  "password": "Annapassword1234!"
+}
+
+### Login utente
+POST http://localhost:5000/api/users/login
+Content-Type: application/json
+
+{
+  "email": "luca@example.com",
+  "password": "Lucapassword1234!"
+}
+
+### Eliminazione utente
+DELETE http://localhost:5000/api/users/delete/{user_id}

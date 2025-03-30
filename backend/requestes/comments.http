@@ -1,0 +1,16 @@
+### GET Lista Commenti
+GET http://localhost:5000/api/comments
+
+### POST Creare un Commento
+POST http://localhost:5000/api/comments/create
+Content-Type: application/json
+
+{
+    "postId": "ID_DEL_POST",
+    "authorId": "ID_DELL_AUTORE",
+    "content": "Sono un commento!"
+}
+
+### DELETE Eliminare un Commento
+DELETE http://localhost:5000/api/comments/ID_DEL_COMMENTO
+
