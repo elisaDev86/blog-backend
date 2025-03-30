@@ -21,7 +21,7 @@ server.use(express.json()); // Per gestire JSON nelle richieste
 
 // 📌 Configura le sessioni per Passport
 server.use(session({
-    secret: "supersegreto",  // Cambia questa stringa con qualcosa di più sicuro
+    secret: process.env.SESSION_SECRET || "supersegreto",  // Usa una variabile d'ambiente
     resave: false,
     saveUninitialized: true,
 }));
@@ -30,14 +30,18 @@ server.use(session({
 server.use(passport.initialize());
 server.use(passport.session());
 
-// Configura CORS prima di tutte le altre rotte
+// ✅ CONFIGURAZIONE CORS (aggiunto il dominio Vercel)
 const corsOptions = {
-    origin: ["http://localhost:3000", "http://localhost:5173"], // Solo il frontend da questa origine potrà accedere
-    methods: "GET,POST,PUT,DELETE,PATCH", // Metodi HTTP consentiti
-    allowedHeaders: "Content-Type,Authorization",  // Headers consentiti
-    credentials: true,  // Permette le credenziali come i cookie
+    origin: [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "https://blog-frontend-khif-6sd6933t9-elisas-projects-a2881191.vercel.app" // ✅ AGGIUNTO IL DOMINIO DI VERCEL
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Metodi HTTP consentiti
+    allowedHeaders: ["Content-Type", "Authorization"],  // Headers consentiti
+    credentials: true,  // Permette credenziali come i cookie
 };
-server.use(cors(corsOptions)); // Permette richieste da altri domini
+server.use(cors(corsOptions)); // Applica CORS
 
 // Connessione a MongoDB
 const connectDB = async () => {
@@ -59,7 +63,7 @@ server.use("/api/users", userRoutes); // Rotte per gli utenti
 server.use('/api/posts', postRoutes); // Rotte per i post
 server.use("/api/userlist", userListRoutes); // Rotte per recuperare la lista degli utenti
 server.use("/api/cloudinary", cloudinaryRoutes);  // Aggiungi la rotta per Cloudinary
-server.use("/api/auth", authRoutes);  // 📌 Aggiungole rotte per Google OAuth
+server.use("/api/auth", authRoutes);  // 📌 Aggiungi le rotte per Google OAuth
 
 // Porta e avvio server
 const PORT = process.env.PORT || 5000;
