@@ -1,28 +1,29 @@
 import express from "express";
-import cors from "cors";  
+import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import session from "express-session";
-import passport from "./config/passport.js";  
+import passport from "./config/passport.js";
+import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 
-import userRoutes from "./routes/user.routes.js"; 
-import postRoutes from './routes/post.routes.js'; 
-import userListRoutes from "./routes/userListRoutes.routes.js"; 
-import cloudinaryRoutes from './routes/cloudinaryRoutes.routes.js';  
-import authRoutes from "./routes/auth.routes.js";  
+import userRoutes from "./routes/user.routes.js";
+import postRoutes from "./routes/post.routes.js";
+import userListRoutes from "./routes/userListRoutes.routes.js";
+import cloudinaryRoutes from "./routes/cloudinaryRoutes.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 
-dotenv.config(); 
+dotenv.config();
 
 const server = express();
 
 // 🔹 CORS configurato correttamente
 const corsOptions = {
     origin: "https://blog-frontend-uz18.vercel.app", // SOLO frontend deployato
-    methods: "GET,POST,PUT,DELETE,PATCH", 
-    allowedHeaders: "Content-Type,Authorization",  
-    credentials: true,  
+    methods: "GET,POST,PUT,DELETE,PATCH",
+    allowedHeaders: "Content-Type,Authorization",
+    credentials: true,
 };
-server.use(cors(corsOptions)); 
+server.use(cors(corsOptions));
 
 // 🔹 Middleware per assicurarsi che ogni risposta includa CORS headers
 server.use((req, res, next) => {
@@ -35,9 +36,25 @@ server.use((req, res, next) => {
 
 server.use(express.json());
 
+// 🔹 Implementazione della strategia JWT
+const jwtOptions = {
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.JWT_SECRET, // Legge il segreto dal .env
+};
+
+passport.use(
+    new JwtStrategy(jwtOptions, async (jwtPayload, done) => {
+        try {
+            return done(null, jwtPayload); // L'utente è autenticato
+        } catch (error) {
+            return done(error, false);
+        }
+    })
+);
+
 // 🔹 Configura sessioni
 server.use(session({
-    secret: process.env.SESSION_SECRET || "supersegreto", 
+    secret: process.env.SESSION_SECRET || "supersegreto",
     resave: false,
     saveUninitialized: true,
 }));
@@ -55,17 +72,17 @@ const connectDB = async () => {
         console.log("✅ Connesso a MongoDB");
     } catch (err) {
         console.error("❌ Errore di connessione a MongoDB:", err.message);
-        process.exit(1); 
+        process.exit(1);
     }
 };
 connectDB();
 
 // 🔹 Rotte API
-server.use("/api/users", userRoutes); 
-server.use("/api/posts", postRoutes); 
-server.use("/api/userlist", userListRoutes); 
-server.use("/api/cloudinary", cloudinaryRoutes);  
-server.use("/api/auth", authRoutes);  
+server.use("/api/users", userRoutes);
+server.use("/api/posts", postRoutes);
+server.use("/api/userlist", userListRoutes);
+server.use("/api/cloudinary", cloudinaryRoutes);
+server.use("/api/auth", authRoutes);
 
 // 🔹 Gestione errori generica
 server.use((err, req, res, next) => {
