@@ -32,8 +32,14 @@ server.use(
 server.use(passport.initialize());
 server.use(passport.session());
 
-// ✅ CONFIGURAZIONE CORS DISABILITATA (SOLO TEMPORANEO - NON PER PRODUZIONE)
-server.use(cors()); // Consente tutte le origini (pericoloso in produzione)
+// ✅ CONFIGURAZIONE CORS
+const corsOptions = {
+    origin: ["https://blog-frontend-uz18.vercel.app", "http://localhost:3000", "http://localhost:5173"], // Solo il frontend da questa origine potrà accedere
+    methods: "GET,POST,PUT,DELETE,PATCH", // Metodi HTTP consentiti
+    allowedHeaders: "Content-Type,Authorization",  // Headers consentiti
+    credentials: true,  // Permette le credenziali come i cookie
+};
+server.use(cors(corsOptions)); // Permette richieste da altri domini
 
 // Connessione a MongoDB
 const connectDB = async () => {
